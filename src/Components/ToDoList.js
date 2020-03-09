@@ -45,35 +45,29 @@ const ToDoList = props => {
 
   const [toDos, setToDos] = useState([]);
 
+  const onChangeHandler = event => {
+    setNewToDoTask(event.target.value);
+  };
+
   const onSubmitHandler = event => {
     event.preventDefault();
-    const newToDoObject = {
-      toDoTask: newToDoTask,
-      isComplete: false
-    };
+    const newToDoObject = { toDoTask: newToDoTask, isComplete: false };
     setToDos([...toDos, newToDoObject]);
     setNewToDoTask("");
     console.log(toDos);
     console.log(newToDoTask);
   };
 
-  const onChangeHandler = event => {
-    setNewToDoTask(event.target.value);
-  };
-
   const checkBoxHandler = (evt, i) => {
-    let selectedToDo = toDos[i];
-    selectedToDo.isComplete = !selectedToDo.isComplete;
+    const selectedToDo = toDos[i];
+    const oppositeIsComplete = !selectedToDo.isComplete;
+    selectedToDo.isComplete = oppositeIsComplete;
     setToDos([...toDos]);
   };
 
-  const onDeleteHandler = (evt, i) => {
-    let selectedToDelete = toDos[i];
-    console.log(selectedToDelete);
-    let newToDos = toDos.slice();
-    newToDos.splice(selectedToDelete, 1);
-    setToDos(newToDos);
-    console.log(toDos);
+  const onDeleteHandler = deleteIdx => {
+    const newToDoList = toDos.filter((toDos, i) => deleteIdx !== i);
+    setToDos(newToDoList);
   };
 
   return (
@@ -92,9 +86,7 @@ const ToDoList = props => {
                   name="isComplete"
                 />
                 {task.isComplete === true ? (
-                  <button onClick={evt => onDeleteHandler(evt, i)}>
-                    Delete
-                  </button>
+                  <button onClick={() => onDeleteHandler(i)}>Delete</button>
                 ) : (
                   ""
                 )}
@@ -105,7 +97,12 @@ const ToDoList = props => {
       </section>
       <section>
         <form onSubmit={onSubmitHandler}>
-          <ToDoText onChange={onChangeHandler} type="text" name="toDoTask" />
+          <ToDoText
+            onChange={onChangeHandler}
+            type="text"
+            name="toDoTask"
+            value={newToDoTask}
+          />
           <InputButton type="submit" />
         </form>
       </section>
